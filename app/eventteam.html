@@ -52,59 +52,85 @@
 <div class="row">
 <div class="box">
 <div class="col-lg-12">
+<style>
+    x{
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        color: #4B0082;
+        font-size: 20px;
+    }
+    y{
+        font-family: Impact, Charcoal, sans-serif;
+        color: #8B4513;
+        font-size: 20px;
+    }
+</style>
 
 <main>
                 
     <!-- event details -->
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-6">Minumum Team Size: {{minTeamSize}}</div>
-            <div class="col-sm-6">Maximum Team Size: {{maxTeamSize}}</div>
+            <div class="col-sm-4"><x>Team Size: {{minTeamSize}} to {{maxTeamSize}}</x></div>
+            <br><br>
         </div>
         <div class="row">
-            <div class="col-sm-6">Start Date: {{startDate | date:'yyyy-MM-dd'}}</div>
-            <div class="col-sm-6">End Date: {{endDate | date:'yyyy-MM-dd'}}</div>
+            <div class="col-sm-6"><x>Date: From <x style="color: #2E8B57;">{{startDate | date:'yyyy-MM-dd'}}</x> to <x style="color: #2E8B57;">{{endDate | date:'yyyy-MM-dd'}}</x></x></div>
+            <br><br>
         </div>
-        <span>Details: {{details}}</span>
-        <br>
+        <span>
+            <x>Description: </x>
+            <br>
+            <div class="col-sm-6" style="background-color: #87CEEB; border-style: solid;">
+            <x style="color: #008080; font-size: 15px;">{{details}}</x>
+            </div>
+        </span>
+        <br><br>
     </div>
-
-    <md-button class="md-raised" ng-href="admin.html?event={{eventName}}">Modify</md-button>
+<!-- 
+    <button ng-href="admin.html?event={{eventName}}" >Modify Event</button>
+    <button type="button" class="btn btn-info" >Modify Event</button> -->
+    <md-button class="md-warn md-raised" ng-href="admin.html?event={{eventName}}">Modify Event</md-button>
     <br><br>
 
     <div id="team-list">
         <!-- filter and sort switches -->
         <div class="container-fluid">
             <form>
-                <div class="row">
+                <div class="row" style="border-top-color: #D2B48C;">
 
-                    <div>
-                        <center><span>Search:<input type="text" placeholder="Type to search" ng-model="searchText">
+                    
+                    <div class="col-sm-2">
+                        <span><x>Searching: </x></span>
+                    </div>
+                    <div class="col-sm-4">
+                        <center><span><x style="color: #2E8B57;">By Name: </x><input type="text" placeholder="Type to search" ng-model="searchText">
                         </span></center>
-                    </div>
-                    <div class="col-sm-3">
-                        <span>Filter</span>
-                    </div>
-
-                    <div class="col-sm-3">
-                        <md-switch ng-model="filterPlacesSwitch" ng-change="filterTeams(filterPlacesSwitch, filterSkillsMatchSwitch)">Places left</md-switch>
-                    </div>
-                    <div class="col-sm-3">
-                        <md-switch ng-model="$parent.filterSkillsMatchSwitch" ng-change="filterTeams(filterPlacesSwitch, filterSkillsMatchSwitch)" ng-if="user">Match my skills</md-switch>
-                    </div>
-                    <div class="col-sm-3">
-
+                        <br>
                     </div>
                 </div>
+
                 <div class="row">
+
+                    <div class="col-sm-2"></div>
                     <div class="col-sm-3">
-                        <span>Sort</span>
+                        <md-checkbox ng-model="filterPlacesSwitch" ng-change="filterTeams(filterPlacesSwitch, filterSkillsMatchSwitch)">Available seat</md-checkbox>
                     </div>
                     <div class="col-sm-3">
-                        <md-switch ng-model="sortPlacesSwitch" ng-change="sortTeams('places')">Places left</md-switch>
+                        <md-checkbox ng-model="$parent.filterSkillsMatchSwitch" ng-change="filterTeams(filterPlacesSwitch, filterSkillsMatchSwitch)" ng-if="user">match tags with you</md-checkbox>
+                    </div>
+                </div>    <!-- <div class="col-sm-3">
+
+                    </div> -->
+                <br><br>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <span><x>In order</x></span>
                     </div>
                     <div class="col-sm-3">
-                        <md-switch ng-model="$parent.sortSkillsMatchSwitch" ng-change="sortTeams('skillsMatch')" ng-if="user">Match my skills</md-switch>
+                        <md-checkbox ng-model="sortPlacesSwitch" ng-change="sortTeams('places')">Available seat</md-checkbox>
+                    </div>
+                    <div class="col-sm-3">
+                        <md-checkbox ng-model="$parent.sortSkillsMatchSwitch" ng-change="sortTeams('skillsMatch')" ng-if="user"> match my tags</md-checkbox>
                     </div>
                     <div class="col-sm-3">
 
@@ -115,25 +141,25 @@
 
 
         <!-- teams -->
-        <md-card ng-repeat="team in teams | filter:searchText">
+        <md-card ng-repeat="team in teams | filter:searchText" style="background-color: #D2B48C;">
             <md-card-title>
                 <md-card-title-text>
-                    <span class="md-headline">{{team.name}}</span>
+                    <span class="md-headline"><y>{{team.name}}</y></span>
                     <md-card-title-text ng-repeat="member in team.teamMembers">
-                        <span class="md-subhead">{{member.name}}</span>
+                        <span class="md-subhead"><y>{{member.name}}</y></span>
                     </md-card-title-text>
                 </md-card-title-text>
             </md-card-title>
             <md-card-actions layout="row" layout-align="end center">
-                <md-button ng-if="team.currentTeamSize < team.size" ng-click="requestTeam(team.name)">Request</md-button>
-                <md-button ng-href="team.html?event={{eventName}}&team={{team.name}}">Edit</md-button>
+                <md-button ng-if="team.currentTeamSize < team.size" ng-click="requestTeam(team.name)"><y>Request</y></md-button>
+                <md-button ng-href="team.html?event={{eventName}}&team={{team.name}}"><y>Manage</y></md-button>
             </md-card-actions>
         </md-card>
 
     </div>
 
 
-    <md-button ng-click="createTeam($event)" class="md-secondary md-raised pull-right" aria-label="create team">Create New Team</md-button>
+    <button ng-click="createTeam($event)" type="button" class="btn btn-success pull-right" aria-label="create team">Create New Team</button>
 
     <br><br><br>
                 

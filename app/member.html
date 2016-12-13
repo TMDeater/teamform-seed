@@ -54,43 +54,63 @@
 <div class="box">
 <div class="col-lg-12">
 	<div ng-if="user">
-	<div class="container-fluid">
-	<div class="row">
-		<div class="col-sm-3">
-	  		<img ng-src="{{user.photoURL}}" />
-		</div>
-	    <div class="col-sm-9">
-	       <h2>{{user.email}}</h2>
-	       <div class="row">
-	       <div class="col-sm-4">
-            <span>Skills:</span>
-            <ul>
-                <li ng-repeat="skill in skills">{{skill.$value}}</li>
-            </ul>
-           </div>
-	       <div class="col-sm-8">
-	                    <!-- skills input -->
-            <form>
-                <md-input-container>
-                    <label>Skills</label>
-                    <input id="skillInput" type="text" ng-model="$parent.skillInput" ng-required="true">
-                </md-input-container>
-                <md-button type="submit" ng-click="addSkill()" class="md-raised">Add Skill</md-button>
-            </form>
+	<div class="container">
+        	<div class="row">
+        		
+        	    <div class="col-sm-9">
+        	       <h3>{{user.displayName}}</h3>
+                </div>
+                <div class="col-sm-3">
+                    <img ng-src="{{user.photoURL}}" />
+                </div>
+            </div>
+
+            <div class="row">
+               <span>email: {{user.email}}</span>
+               <br><br>
+            </div>
+
+           <div class="row">
+    	       <div class="col-sm-4">
+                    <span>Tags:</span>
+                    <ul>
+                        <li ng-repeat="skill in skills">{{skill.$value}}</li>
+                    </ul>
+                </div>
+	       
+                   <div class="col-sm-8">
+                        <form>
+                            <div class="row">
+                            <div class="col-sm-8">
+                            <div class="form-group">
+                                <label>Tags: </label>
+                                <input type="text" class="form-control" id="skillInput" ng-model="$parent.skillInput" >
+                            </div></div></div>
+                <button type="submit" ng-click="addSkill()" class="btn btn-info">Add Tag</button>
+
+                        </form>
+        	        </div>
+           
 	       </div>
-	     </div>
-	 </div></div></div>
+	 </div>
 
 
-	<div class="container-fluid">
-	    <div class="row">
-	        <div class="col-sm-6">
-	            <md-subheader>Joined Events</md-subheader>
+	<div class="container">
+    <div class="col-md-8">
+	    <ul class="nav nav-tabs">
+            <li style="padding-top: 4px; padding-bottom: 4px;" class="active"><a data-toggle="tab" href="#pe">Participating Events</a></li>
+            <li style="padding-top: 4px; padding-bottom: 4px;"><a data-toggle="tab" href="#mwy">Matching with you</a></li>
+        </ul>
+
+        <div class="tab-content">
+	        <div id="pe" class="tab-pane fade in active">
+	            <h3>Participating Events</h3>
 	            <md-card ng-repeat="(eventKey, eventValue) in userObj.events">
 	                <md-card-title>
 	                    <md-card-title-text>
-	                        <span class="md-headline">{{eventKey}}</span>
-	                        <span class="md-subhead">{{eventValue.team}}</span>
+	                        <span style="font-size: 50px; padding-bottom: 5px;font-family: Impact, Charcoal, sans-serif;">{{eventKey}}</span>
+	                        <span style="color: #04910E; padding-top: 10px;
+                            padding-left: 10px; font-family: "Arial Black", Gadget, sans-serif">{{eventValue.team}}</span>
 	                    </md-card-title-text>
 	                </md-card-title>
 	                <md-card-content ng-if="!eventValue.team">
@@ -106,12 +126,12 @@
 	            </md-card>
 	        </div>
 
-	        <div class="col-sm-6">
-	            <md-subheader>Recommendations</md-subheader>
+	        <div id="mwy" class="tab-pane fade">
+	            <h3>Current Matching with you</h3>
 	            <md-card ng-repeat="recommendation in recommendations">
 	                <md-card-title>
 	                    <md-card-title-text>
-	                        <span class="md-headline">{{recommendation.eventName}}</span>
+	                        <span style="color: #960E20 ;font-size: 30px; padding-bottom: 5px; font-family: Impact, Charcoal, sans-serif">Team Name: {{recommendation.eventName}}</span>
 	                    </md-card-title-text>
 	                </md-card-title>
     <md-card-content>
@@ -119,11 +139,13 @@
             <md-list ng-cloak>
                 <md-list-item ng-repeat="team in recommendation.teams" ng-href="team.html?event={{recommendation.eventName}}&team={{team.teamName}}" class="md-3-line">
                     <div class="md-list-item-text" layout="column">
-                        <p>Team: {{team.teamName}} (Places: {{team.placesLeft}})</p>
-                        <p>Missing Skills match ({{team.missingSkillsMatch.number}}): {{team.missingSkillsMatch.match.join(", ")}}</p>
-                        <p>Skills match ({{team.skillsMatch.number}}): {{team.skillsMatch.match.join(", ")}}</p>
+                        <p style="color: #960E20 ;font-size: 15px; padding-bottom: 5px; font-family: Impact, Charcoal, sans-serif">Available: {{team.placesLeft}}</p>
+                        <hr>
+                        <!-- <p>Team's Prefer Tag ({{team.missingSkillsMatch.number}}): {{team.missingSkillsMatch.match.join(", ")}}</p> -->
+                        <p style="color: #960E20 ;font-size: 15px; padding-bottom: 5px; font-family: Impact, Charcoal, sans-serif">You and Team's Prefer Tag ({{team.skillsMatch.number}} found):
+                        {{team.skillsMatch.match.join(", ")}}</p>
                     </div>
-                    <md-button ng-click="requestTeam(recommendation.eventName, team.teamName)" class="md-secondary">Request</md-button>
+                    <md-button ng-click="requestTeam(recommendation.eventName, team.teamName)" class="md-secondary"><p style="color: #960E20 ;font-size: 15px; padding-bottom: 5px; font-family: Impact, Charcoal, sans-serif">Request</p></md-button>
                 </md-list-item>
             </md-list>
         </md-content>
@@ -132,7 +154,7 @@
 	        </div>
 	    </div>
 	</div>
-	</div>
+	</div></div>
 
 	<div ng-if="!user">
 	<p>no user is signed in</p>
@@ -167,5 +189,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-messages.min.js"></script>
 
     <script src="js/member.js"></script>
+    <style>
+    .nav-tabs li>a{
+       /* height: 43px;*/
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+    </style>
 </body>
 </html>

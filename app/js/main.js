@@ -103,17 +103,16 @@ angular.module("indx-app", ["firebase", "ngMaterial"])
 
             userRef.update({name: user.displayName});
 
-//            var skillarray=[];
-            userRef.child("skills").once('value', function(snapshot) {
+userRef.child("skills").once('value', function(snapshot) {
                 var exists = (snapshot.val() !==null);
-                if (exists==undefined){
+                if (!exists){
                     userRef.update({skills: "dummy"});
                     window.alert("not exist");
                 }
-            });
-            // if(snapshot==undefined){
-            //     userRef.update({skills: "dummy"});
-            // }
+            }); //           if(user.skills==undefined){
+               // userRef.update({skills: "dummy"});
+//            }
+
 
             // refresh the scope
             $scope.$apply(function() {
