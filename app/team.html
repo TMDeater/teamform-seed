@@ -166,13 +166,30 @@
 
   <!-- Bootstrap Core JavaScript -->
   <script src="js/bootstrap.min.js"></script>
+<script>
+function removeTeamSkills(teamSkills, teamMembers, member) {
+    return teamSkills.filter(function(teamSkill) {
+        // keep the skill if the member does not have it
+        if (!member.skills.includes(teamSkill)) {
+            return true;
+        }
 
-  <!-- Script to Activate the Carousel -->
-  <script>
-  $('.carousel').carousel({
-    interval: 5000 //changes the speed
-  })
-  </script>
+        // check if any other members also have the skill
+        for (var i in teamMembers) {
+            if (teamMembers[i].uid === member.uid) {
+                continue;
+            }
+
+            // keep the skill if another member has it
+            if (teamMembers[i].skills.includes(teamSkill)) {
+                return true;
+            }
+        }
+
+        return false;
+    });
+}
+</script>
 
   <!-- Angular and Angular-route libraries (v1.5.7) -->
   <script src="lib/angular.min.js"></script>
@@ -191,5 +208,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap.min.js"></script>
 
   <script src="js/team.js"></script>
+  <script>
+ function addTeamSkills(teamSkills, userSkills) {
+    userSkills.forEach(function(userSkill) {
+        if (!teamSkills.includes(userSkill)) {
+            teamSkills.push(userSkill);
+        }
+    });
+
+    return teamSkills;
+}
+
+</script>
 </body>
 </html>

@@ -111,17 +111,17 @@
                 <h2 class="text-center"> Available Event </h2>
 
                 <!-- event list -->
-                <div id="event-list">
+                <div>
                   <md-list >
-                    <md-list-item style="background-color: #87CEEB; border-style: solid;" ng-repeat="(eventKey, eventValue) in events" ng-href="eventteam.html?event={{eventKey}}" class="secondary-button-padding">
-                      <span><x>{{eventKey}}</x></span>
-                      <md-button ng-click="joinEvent(eventKey)" ng-if="user" class="md-secondary"><y>Join</y></md-button>
-                      <md-button ng-href="admin.html?event={{eventKey}}" class="md-secondary">Admin mode</md-button>
+                    <md-list-item style="background-color: #87CEEB; border-style: solid;" ng-repeat="(evtKey, evtValue) in events" ng-href="eventteam.html?event={{evtKey}}" class="secondary-button-padding">
+                      <span><x>{{evtKey}}</x></span>
+                      <md-button ng-click="joinEvent(evtKey)" ng-if="user" class="md-secondary"><y>Join</y></md-button>
+                      <md-button ng-href="admin.html?event={{evtKey}}" class="md-secondary">Admin mode</md-button>
                     </md-list-item>
                   </md-list>
                 </div>
 
-                <button ng-click="createEvent($event)" type="button" class="btn btn-info">Create Event</button>
+                <button ng-click="createEvent($evt)" type="button" class="btn btn-info">Create Event</button>
 
               </div>
             </div>

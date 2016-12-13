@@ -74,7 +74,7 @@
             <br><br>
         </div>
         <div class="row">
-            <div class="col-sm-6"><x>Date: From <x style="color: #2E8B57;">{{startDate | date:'yyyy-MM-dd'}}</x> to <x style="color: #2E8B57;">{{endDate | date:'yyyy-MM-dd'}}</x></x></div>
+            <div class="col-sm-6"><x>Date: From <x style="color: #2E8B57;">{{sttD | date:'yyyy-MM-dd'}}</x> to <x style="color: #2E8B57;">{{edD | date:'yyyy-MM-dd'}}</x></x></div>
             <br><br>
         </div>
         <span>
@@ -113,10 +113,10 @@
 
                     <div class="col-sm-2"></div>
                     <div class="col-sm-3">
-                        <md-checkbox ng-model="filterPlacesSwitch" ng-change="filterTeams(filterPlacesSwitch, filterSkillsMatchSwitch)">Available seat</md-checkbox>
+                        <md-checkbox ng-model="fPlacesSwh" ng-change="filterTeams(fPlacesSwh, fSkillsMatchSwh)">Available seat</md-checkbox>
                     </div>
                     <div class="col-sm-3">
-                        <md-checkbox ng-model="$parent.filterSkillsMatchSwitch" ng-change="filterTeams(filterPlacesSwitch, filterSkillsMatchSwitch)" ng-if="user">match tags with you</md-checkbox>
+                        <md-checkbox ng-model="$parent.fSkillsMatchSwh" ng-change="fTeams(fPlacesSwh, fSkillsMatchSwh)" ng-if="user">match tags with you</md-checkbox>
                     </div>
                 </div>    <!-- <div class="col-sm-3">
 
@@ -127,10 +127,10 @@
                         <span><x>In order</x></span>
                     </div>
                     <div class="col-sm-3">
-                        <md-checkbox ng-model="sortPlacesSwitch" ng-change="sortTeams('places')">Available seat</md-checkbox>
+                        <md-checkbox ng-model="stPlacesSwitch" ng-change="stTeams('places')">Available seat</md-checkbox>
                     </div>
                     <div class="col-sm-3">
-                        <md-checkbox ng-model="$parent.sortSkillsMatchSwitch" ng-change="sortTeams('skillsMatch')" ng-if="user"> match my tags</md-checkbox>
+                        <md-checkbox ng-model="$parent.stSkillsMatchSwh" ng-change="stTeams('skillsMatch')" ng-if="user"> match my tags</md-checkbox>
                     </div>
                     <div class="col-sm-3">
 
@@ -159,7 +159,7 @@
     </div>
 
 
-    <button ng-click="createTeam($event)" type="button" class="btn btn-success pull-right" aria-label="create team">Create New Team</button>
+    <button ng-click="createTeam($evt)" type="button" class="btn btn-success pull-right" aria-label="create team">Create New Team</button>
 
     <br><br><br>
                 
