@@ -4,32 +4,25 @@
  * @param teamObj team firebaseObject
  * @return team JavaScript array
  */
-function parseTeams(teamObj, userObj) {
+function prseTms(tmObj, usrObj) {
     var teams = [];
 
-    angular.forEach(teamObj, function(value, key) {
-        var c = key.charAt(0);
+    angular.forEach(tmObj, function(val, ky) {
+        var c = ky.charAt(0);
         if (c !== "_" && c !== "$" && c !== ".") {
             teams.push({
                 name: key,
-                size: value.size,
-                currentTeamSize: value.currentTeamSize,
-                skills: value.skills,
-                teamMembers: value.teamMembers,
-                teamSkills: value.teamSkills,
-                skillsMatch: (userObj !== null) ? isMatched(value.skills, userObj.skills) : null
+                size: val.size,
+                currentTeamSize: val.currentTeamSize,
+                skills: val.skills,
+                teamMembers: val.teamMembers,
+                teamSkills: val.teamSkills,
+                skillsMatch: (usrObj !== null) ? isMatched(val.skills, usrObj.skills) : null
             });
         }
     });
-
-    console.log(teams);
     return teams;
 }
-
-$(document).ready(function() {
-    // change the title in the navigation to the event name
-    $(".mdl-layout>.mdl-layout__header>.mdl-layout__header-row>.mdl-layout__title").html(getURLParameter("event") + " Event Team");
-});
 
 angular.module("teamform-eventteam-app", ["firebase", "ngMaterial"])
 .controller("EventTeamCtrl", function($scope, $firebaseObject, $firebaseArray, $mdDialog) {
@@ -69,7 +62,7 @@ angular.module("teamform-eventteam-app", ["firebase", "ngMaterial"])
                 $scope.userObj.$loaded().then(function(user) {
                     teamObj = $firebaseObject(teamRef);
                     teamObj.$loaded().then(function(teams) {
-                        $scope.teams = parseTeams(teams, $scope.userObj);
+                        $scope.teams = prseTms(teams, $scope.userObj);
                         $scope.dbTeams = angular.copy($scope.teams);
                     });
                 });
@@ -98,43 +91,39 @@ angular.module("teamform-eventteam-app", ["firebase", "ngMaterial"])
     var eventAdminParamRef = firebase.database().ref().child("events").child($scope.eventName).child("admin").child("param");
     var eventAdminParamObj = $firebaseObject(eventAdminParamRef);
     eventAdminParamObj.$loaded().then(function(admin) {
-        $scope.minTeamSize = admin.minTeamSize;
-        $scope.maxTeamSize = admin.maxTeamSize;
-        $scope.startDate = admin.startDate;
-        $scope.endDate = admin.endDate;
-        $scope.details = admin.details;
+        $scope.minTeamSize = admin.minTeamSize;$scope.maxTeamSize = admin.maxTeamSize;$scope.sttD = admin.sttD;$scope.edD = admin.edD;
+        $scope.description = admin.description;
     });
 
 
-    /* filter and sort switches */
+    /* filter and sort toggle */
     // bind variables
-    $scope.filterPlacesSwitch = false;
-    $scope.filterSkillsMatchSwitch = false;
-    $scope.sortPlacesSwitch = false;
-    $scope.sortSkillsMatchSwitch = false;
+    $scope.fPlacesSwh = false;
+    $scope.fSkillsSwh = false;
+    $scope.stPlacesSwh = false;
+    $scope.stSkillsMatchSwh = false;
 
     // filter teams that still have places left
     $scope.filterPlaces = function(teams) {
-        console.log("filterPlaces()");
-        return getAvailableTeam(teams);
+        return getAvailTeam(teams);
     };
 
     // filter teams that match the signed in user skills
-    $scope.filterSkillsMatch = function(teams) {
-        console.log("filterSkillsMatch()");
-        return teams.filter(function(team) {return team.skillsMatch.number > 0;});
+    $scope.fSkillsMatch = function(teams) {
+        return teams.filter(function(team) 
+			{return team.skillsMatch.number > 0;});
     };
 
     // filter the teams
-    $scope.filterTeams = function(filterPlacesSwitch, filterSkillsMatchSwitch) {
+    $scope.fTeams = function(filterPlacesSwitch, filterSkillsMatchSwitch) {
         var teams = angular.copy($scope.dbTeams);
 
-        if (filterPlacesSwitch) {
-            teams = $scope.filterPlaces(teams);
+        if (fPlacesSwh) {
+            teams = $scope.fPlaces(teams);
         }
 
-        if (filterSkillsMatchSwitch) {
-            teams = $scope.filterSkillsMatch(teams);
+        if (fSkillsMatchSwh) {
+            teams = $scope.fSkillsMatch(teams);
         }
 
         $scope.teams = angular.copy(teams);
@@ -142,37 +131,40 @@ angular.module("teamform-eventteam-app", ["firebase", "ngMaterial"])
 
     // sort teams by the number of places left
     $scope.sortPlaces = function(teams) {
-        console.log("sortPlaces()");
         return teams.sort(function(a, b) {
             var x = a["size"]-a["currentTeamSize"]; var y = b["size"]-b["currentTeamSize"];
-            return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+            if (x>y) return 1;
+			if (x<y) return -1;
+			else 	 return 0;
         });
     };
 
-    // sort teams by the number of skills matched
-    $scope.sortSkillsMatch = function(teams) {
-        console.log("sortSkillsMatch()");
+    // sort teams by skills matched
+    $scope.stSkillsMatch = function(teams) {
+
 
         return teams.sort(function(a, b) {
             var x = a.skillsMatch.number; var y = b.skillsMatch.number;
-            return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+			if (y>x) return 1;
+			if (y<x) return -1;
+			else 	 return 0;
         });
     };
 
     // sort the teams
-    $scope.sortTeams = function(sortBy) {
+    $scope.stTeams = function(sortBy) {
         if (sortBy === "places") {
-            $scope.sortSkillsMatchSwitch = false;
+            $scope.stSkillsMatchSwh = false;
         } else if (sortBy === "skillsMatch") {
-            $scope.sortPlacesSwitch = false;
+            $scope.stPlacesSwh = false;
         }
 
         var teams = angular.copy($scope.teams);
 
-        if ($scope.sortPlacesSwitch) {
-            teams = $scope.sortPlaces(teams);
-        } else if ($scope.sortSkillsMatchSwitch) {
-            teams = $scope.sortSkillsMatch(teams);
+        if ($scope.stPlacesSwh) {
+            teams = $scope.stPlaces(teams);
+        } else if ($scope.stSkillsMatchSwh) {
+            teams = $scope.stSkillsMatch(teams);
         }
 
         $scope.teams = angular.copy(teams);
@@ -181,18 +173,11 @@ angular.module("teamform-eventteam-app", ["firebase", "ngMaterial"])
 
     // create new team function
     $scope.createTeam = function() {
-        // var teamNameInput = $mdDialog.prompt()
-        //     .title("Create New Team")
-        //     .ok("OK")
-        //     .cancel("Cancel");
 
- //       $mdDialog.show(teamNameInput)
-  //          .then(function(team) {
                 var inputteam = prompt("Enter New Team Name");
                 var newTeamRef = teamRef.child(inputteam);
                 newTeamRef.set({size: parseInt(($scope.minTeamSize + $scope.maxTeamSize) / 2), currentTeamSize: 0});
                 
- //           });
         window.alert("team created");
         location.reload();
 
@@ -222,25 +207,25 @@ angular.module("teamform-eventteam-app", ["firebase", "ngMaterial"])
         // });
 
         eventMemberTeamArray.$loaded().then(function(selections) {
-            var requests = [];
+            var req = [];
 //window.alert("test2")
             // add the selections stored in the database
             selections.forEach(function(selection) {
-                requests.push(selection.$value);
+                req.push(selection.$value);
             });
 
             // add the request team if it was not in the database
-            if (!requests.includes(teamName)) {
-                requests.push(teamName);
+            if (!req.includes(teamName)) {
+                req.push(teamName);
             }
 //window.alert("test3");
             // update the record in the event
-            eventMemberTeamRef.set(requests);
+            eventMemberTeamRef.set(req);
 //window.alert("test4");
 //            firebase.database().ref().child("events").child($scope.eventName).child("member").child($scope.user.uid).update({name: user.displayName});
 //window.alert("test5");
             // update the record in the user's profile
-            userEventRef.set(requests);
+            userEventRef.set(req);
 
             window.alert("Team Requested")
             window.open("main.html","_self");

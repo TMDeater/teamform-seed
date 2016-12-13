@@ -16,40 +16,8 @@ var team_ready = function(){
 
 $(document).ready(team_ready);
 
-// add the user's skills to the team when adding a member
-function addTeamSkills(teamSkills, userSkills) {
-    userSkills.forEach(function(userSkill) {
-        if (!teamSkills.includes(userSkill)) {
-            teamSkills.push(userSkill);
-        }
-    });
 
-    return teamSkills;
-}
 
-// remove the user's skills from the team when removing a member
-function removeTeamSkills(teamSkills, teamMembers, member) {
-    return teamSkills.filter(function(teamSkill) {
-        // keep the skill if the member does not have it
-        if (!member.skills.includes(teamSkill)) {
-            return true;
-        }
-
-        // check if any other members also have the skill
-        for (var i in teamMembers) {
-            if (teamMembers[i].uid === member.uid) {
-                continue;
-            }
-
-            // keep the skill if another member has it
-            if (teamMembers[i].skills.includes(teamSkill)) {
-                return true;
-            }
-        }
-
-        return false;
-    });
-}
 
 angular.module('teamform-team-app', ['firebase', "ngMaterial"])
 .controller('TeamCtrl', ['$scope', '$firebaseObject', '$firebaseArray',
@@ -105,11 +73,14 @@ angular.module('teamform-team-app', ['firebase', "ngMaterial"])
     var eventRef = firebase.database().ref().child("events").child(eventName);
 
 
-    var eventAdminParamRef = eventRef.child("admin").child("param");
-    var eventAdminParamObj = $firebaseObject(eventAdminParamRef);
-    eventAdminParamObj.$loaded().then(function(admin) {
-        $scope.minTeamSize = admin.minTeamSize;
-        $scope.maxTeamSize = admin.maxTeamSize;
+    var eventAdminPRef = eventRef.child("admin").child("param");
+    var eventAdminParamObj = $firebaseObject(eventAdminPRef);
+    
+	
+	
+	//load evtAdmin
+	eventAdminParamObj.$loaded().then(function(admin) {
+        $scope.minTeamSize = admin.minTeamSize;$scope.maxTeamSize = admin.maxTeamSize;
     });
 
 
@@ -136,9 +107,13 @@ angular.module('teamform-team-app', ['firebase', "ngMaterial"])
     var teamSkillsRef = eventTeamRef.child("teamSkills");
             eventTeamRef.update({teamSkill: "dummy"});
     $scope.teamSkills = $firebaseArray(teamSkillsRef);
+	var sklRef=eventTeamRef.child("skills");
+	
     var teamSkillsArray = [];
     $scope.teamSkills.$loaded().then(function(teamSkills) {
-        angular.forEach(teamSkills, function(teamSkill) {
+        var tmsklr = eventTeamRef.child("teamSkills");
+		var tmsklr = eventTeamRef.child("tels");
+		angular.forEach(teamSkills, function(teamSkill) {
             teamSkillsArray.push(teamSkill.$value);
         });
     });
@@ -147,12 +122,12 @@ angular.module('teamform-team-app', ['firebase', "ngMaterial"])
     var eventTeamMemberRequestsRef = eventRef.child("member");
     var eventTeamMemberRequestsArray = $firebaseArray(eventTeamMemberRequestsRef);
     eventTeamMemberRequestsArray.$loaded().then(function(members) {
-        $scope.requests = [];
+        $scope.req = [];
 
         angular.forEach(members, function(member) {
             
             if (member.selection !== undefined && member.selection.includes(teamName)) {
-                $scope.requests.push({uid: member.$id, name: member.name, skills: member.skills});
+                $scope.req.push({uid: member.$id, name: member.name, skills: member.skills});
             }
         });
     });
@@ -221,6 +196,10 @@ window.alert(request.skills);
     // add skill function
     $scope.addSkill = function() {
         var skillsArray = $firebaseArray(skillsRef);
+		
+		var sklls = $firebaseArray(skillsRef);
+		
+		var sklsArray = $firebaseArray(skillsRef);
 
         skillsArray.$loaded().then(function(skills) {
             var skill = {};
@@ -239,5 +218,7 @@ window.alert(request.skills);
     .primaryPalette('blue')
     .accentPalette('indigo');
 });
-
+  $('.carousel').carousel({
+    interval: 3000 //changes the speed
+  })
 

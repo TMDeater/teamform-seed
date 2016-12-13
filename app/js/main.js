@@ -139,13 +139,13 @@ userRef.child("skills").once('value', function(snapshot) {
     // create new event function
     $scope.createEvent = function() {
         var eventNameInput = $mdDialog.prompt()
-            .title("Create a New Event")
+            .title("Event Name")
             .ok("Create")
-            .cancel("Cancel");
+            .cancel("Back");
 
         $mdDialog.show(eventNameInput)
-            .then(function(event) {
-                $window.open("admin.html?event=" + event, "_self");
+            .then(function(evt) {
+                $window.open("admin.html?event=" + evt, "_self");
             });
     };
 
@@ -158,14 +158,15 @@ userRef.child("skills").once('value', function(snapshot) {
 
         userProfileObj.$loaded().then(function(userProfile) {
             // add the event to the user's profile
-            var userEventsRef = firebase.database().ref().child("users").child($scope.user.uid).child("events").child(eventName);
-            userEventsRef.update({team: ""});
+            var usrR = firebase.database().ref().child("users");
+            var usrEvtR = usrR.child($scope.user.uid).child("events").child(eventName);
+			usrEvtR.update({team: ""});
 
-            var member = {};
+            var mem = {};
             member[$scope.user.uid] = {name: $scope.user.displayName, skills: userProfile.skills};
 //window.alert("setting member");
-            var eventMemberRef = firebase.database().ref().child("events").child(eventName).child("member");
-            eventMemberRef.update(member);
+            var evtMemR = firebase.database().ref().child("events").child(eventName).child("member");
+            evtMemR.update(member);
 
             window.alert("Joined "+eventName);
             window.open("eventteam.html?event="+eventName, "_self");

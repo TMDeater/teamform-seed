@@ -1,11 +1,11 @@
 
 var admin_ready = function(){
 
-	$('#admin_page_controller').hide();
-	var eventName = getURLParameter("event");
-	$('#text_event_name').text("Event name: " + eventName);
+	$('#admin_ctlr').hide();
+	var eventName = getURLParameter("evt");
+	$('#evt_name').text("Event name: " + eventName);
 	if(eventName == null || eventName.trim() == ""){
-		$('#text_event_name').text("Error: Invalid event name ");
+		$('#evt_name').text("Error: Invalid event name ");
 	}
 
 }
@@ -77,31 +77,30 @@ angular.module("teamform-admin-app", ["firebase", "ngMaterial", "ngMessages"])
     };
 
     // Date
-    $scope.startDate = new Date();
-    $scope.endDate = new Date();
+    $scope.sttD = new Date();
+    $scope.edD = new Date();
 
-    var eventAdminParamRef = firebase.database().ref().child("events").child(eventName).child("admin").child("param");
-    var eventAdminParamObj = $firebaseObject(eventAdminParamRef);
-    eventAdminParamObj.$loaded().then(function(admin) {
-        $scope.startDate = new Date(admin.startDate);
-        $scope.endDate = new Date(admin.endDate);
-        $scope.details = admin.details;
-        console.log($scope.startDate);
-        console.log($scope.endDate);
-        console.log($scope.details);
+    var evtAdminPRef = firebase.database().ref().child("events").child(eventName).child("admin").child("param");
+    var evtAdminPObj = $firebaseObject(evtAdminPRef);
+    evtAdminPObj.$loaded().then(function(admin) {
+        $scope.sttD = new Date(admin.sttD);
+        $scope.edD = new Date(admin.edD);
+        $scope.description = admin.description;
 
-        if (admin.startDate == null && admin.endDate == null) {
-            $scope.startDate = new Date();
-            $scope.endDate = new Date();
+        if (admin.sttD == null) {
+			if (admin.sttD== null){
+				$scope.sttD = new Date();
+				$scope.edD = new Date();
+			}
         }
-        if (admin.details == null) {
-            $scope.details = null;
+        if (admin.description == null) {
+            $scope.description = null;
         }
     });
 
-    $scope.minDate = new Date();
-    $scope.startChange = function() {
-        $scope.minDate = $scope.startDate;
+    $scope.minD = new Date();
+    $scope.sttChge = function() {
+        $scope.minD = $scope.sttD;
     };
 
     $scope.saveContent = function() {
@@ -109,47 +108,17 @@ angular.module("teamform-admin-app", ["firebase", "ngMaterial", "ngMessages"])
             return;
         }
 
-        //console.log($scope.startDate);
-        //console.log($scope.details);
-        ref.update({'startDate': $scope.startDate.getTime(), 'endDate': $scope.endDate.getTime(),
+        ref.update({'startDate': $scope.sttD.getTime(), 'endDate': $scope.edD.getTime(),
             'details': $scope.details});
     };
 
-    $scope.zeroMember = function(teamMembers) {
-        if (teamMembers === undefined) {
+    $scope.zeroMem = function(teamM) {
+        if (teamM === undefined) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     };
 
-
-    // confirm automatic team form
-    $scope.confirmAutomaticTeamForm = function(callback) {
-        var confirm = $mdDialog.confirm()
-            .title("Automatic Team Form")
-            .ok("Form")
-            .cancel("Cancel");
-
-        $mdDialog.show(confirm)
-            .then(function() {
-                callback(true);
-            }, function() {
-                callback(false);
-            });
-    };
-
-    // automatic team form
-    $scope.automaticTeamForm = function() {
-        $scope.confirmAutomaticTeamForm(function(confirm) {
-            if (!confirm) {
-                // document.querySelector(".mdl-js-snackbar").MaterialSnackbar.showSnackbar({message: "Cancel automatic team form"});
-                return;
-            }
-
-            console.log("automatic team form");
-        });
-    };
 })
 .config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
